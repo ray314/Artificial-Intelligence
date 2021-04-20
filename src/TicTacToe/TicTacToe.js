@@ -4,19 +4,16 @@ let board = [
   ['', '', '']
 ];
 
-let players = ['X', 'O'];
+let w;
+let h;
 
-let currentPlayer;
-let available = [];
+let human = 'X';
+let ai = 'O';
+let currentPlayer = human;
 function setup() {
   createCanvas(400, 400);
-  frameRate(1);
-  currentPlayer = floor(random(players.length));
-  for (let j = 0; j < 3; j++) {
-    for (let i = 0; i < 3; i++) {
-      available.push([i, j]);
-    }
-  }
+  w = width / 3;
+  h = height / 3;
 }
 
 function equals3(a,b,c) {
@@ -46,31 +43,40 @@ function checkWinner() {
   if (equals3(board[2][0], board[1][1], board[0][2])) {
     winner = board[2][0];
   }
-  if (winner == null && available.length == 0) {
+
+  let openSpots = 0;
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (board[i][j] == '') {
+        openSpots++;
+      }
+    }
+  }
+  if (winner == null && openSpots == 0) {
     return 'tie';
   } else {
     return winner;
   }
 }
 
-function nextTurn() {
-  let index = floor(random(available.length));
-  let spot = available.splice(index, 1)[0];
-  let i = spot[0];
-  let j = spot[1];
-  board[i][j] = players[currentPlayer];
-  currentPlayer = (currentPlayer + 1) % players.length;
+function mousePressed() {
+  if (currentPlayer == human) {
+    // Human makes a turn
+    let i = floor(mouseX / w);
+    let j = floor(mouseY / h);
+    // If valid turn
+    if (board[i][j] == '') {
+      board[i][j] = human;
+      if (checkWinner() == null) {
+        currentPlayer = ai;
+        bestMove();
+      }
+    }
+  }
 }
-
-//function mousePressed() {
-  //nextTurn();
-//  draw();
-//}
 
 function draw() {
   background(255);
-  let w = width / 3;
-  let h = height / 3;
 
   line(w, 0, w, height);
   line(w*2, 0, w*2, height);
@@ -80,12 +86,12 @@ function draw() {
     for (let i = 0; i < 3; i++) {
       let x = w * i + w/2;
       let y = h * j + h/2;
-      let spot = board[j][i];
+      let spot = board[i][j];
       strokeWeight(4);
-      if (spot == players[1]) {
+      if (spot == ai) {
         noFill();
         ellipse(x,y,w/2);
-      } else if (spot == players[0]) {
+      } else if (spot == human) {
         let xr = w/4;
         line(x-xr, y-xr, x + xr, y + xr);
         line(x+xr, y-xr, x-xr, y + xr);
@@ -104,8 +110,5 @@ function draw() {
     } else {
       resultP.html(`${result} wins`);
     }
-  } else {
-    nextTurn();
   }
-  
 }
