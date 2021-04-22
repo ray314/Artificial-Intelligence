@@ -73,6 +73,11 @@ function mousePressed() {
       }
     }
   }
+  eval();
+    
+  let evalP = createP('');
+  evalP.style('font-size', '32pt');
+  evalP.html(`X1 = ${x1}, O1 = ${o1}`);
 }
 
 function draw() {
@@ -104,11 +109,11 @@ function draw() {
   if (result != null) {
     noLoop();
     let resultP = createP('');
-    resultP.style('font-size', '32pt')
+    resultP.style('font-size', '32pt');
     if (result == 'tie') {
       resultP.html('Tie');
     } else {
       resultP.html(`${result} wins`);
     }
-  }
+  } 
 }

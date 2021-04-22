@@ -1,45 +1,13 @@
-class MiniMax {
-  // Gives the AI the best move at a given depth
-  bestMove(depth) {
-    // AI is the minimizing player
-    let bestScore = Infinity;
-    let move;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (board[i][j] == '') {
-          board[i][j] = ai;
-          // For depth limited search, set depth > 0
-          let score = minimax(board, depth, true);
-          board[i][j] = '';
-          if (score < bestScore) {
-            bestScore = score;
-            move = { i, j };
-          }
-        }
-      }
-    }
-    board[move.i][move.j] = ai;
-    currentPlayer = human;
-    
-  }
-
-  // Full depth search
-  bestMove() {
-    bestMove(Infinity);
-  }
-}
-
 function bestMove() {
   // AI is the minimizing player
   let bestScore = Infinity;
   let move;
-  let depth = 0;
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (board[i][j] == '') {
         board[i][j] = ai;
         // For depth limited search, set depth > 0
-        let score = minimax(board, depth, true);
+        let score = minimax(board, 0, true);
         board[i][j] = '';
         if (score < bestScore) {
           bestScore = score;
@@ -50,7 +18,7 @@ function bestMove() {
   }
   board[move.i][move.j] = ai;
   currentPlayer = human;
-  
+  console.log("test");
 }
 
 let scores = {
@@ -82,7 +50,7 @@ function minimiseScore(board, depth) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = ai;
-        let score = minimax(board, depth - 1, true);
+        let score = minimax(board, depth + 1, true);
         board[i][j] = '';
         bestScore = min(score, bestScore);
       }
@@ -108,27 +76,53 @@ function maximiseScore(board, depth) {
   return bestScore;
 }
 
+var x1 = 0;
+var x2 = 0;
+var o1 = 0;
+var o2 = 0;
+
 function eval() {
   //Eval(s) = 3X2(s) + X1(s) − (3O2(s) + O1(s))
+  // Set these variables to 0 before each evaluation
   x1 = 0;
   x2 = 0;
   o1 = 0;
   o2 = 0;
-  
+  var xVertical = [];
+  var xHorizontal = [];
+  var xDiagonal = [];
+
+  var oVertical = [];
+  var oHorizontal = [];
+  var oDiagonal = [];
   // Search vertically
   for (let j = 0; j < 3; j++) {
     for (let i = 0; i < 3; i++) {
       if (board[i][j] == 'X') {
-        x1++;
+        xVertical.push('X');
       } else if (board[i][j] == 'O') {
-        o1++;
+        oVertical.push('X');
       }
     }
-    // If X and O were found on the same column, then set to 0
-    if (x1 > 0 && o1 > 0) {
-      x1 = 0;
-      o1 = 0;
+    // At the end of each column,
+    // check if there's an O for xVertical
+    if (xVertical.find('O') == false) {
+      for (let i = 0; i < xVertical.length; i++) {
+        // Check if there's one X or two X
+        switch (i) {
+          case 1:
+            // Increment X1
+            x1++;
+            break;
+          case 2:
+            // Increment X2
+            x2++;
+          default:
+            break;
+        }
+      }
     }
+    // Don't evaluate if there's an O
   }
 
   // Search horizontally
@@ -141,23 +135,24 @@ function eval() {
       }
     }
     // If X and O were found on the same column, then set to 0
-    if (x1 > 0 && o1 > 0) {
-      x1 = 0;
-      o1 = 0;
-    }
+    //if (x1 > 0 && o1 > 0) {
+    //  x1 = 0;
+    //  o1 = 0;
+    //}
   }
-  
+
   // Search diagonally 
   if (board[0][0] == 'X') {
     x1++;
   }
-  if (board[1][2] == 'X') {
+  if (board[1][1] == 'X') {
     x1++;
   }
-  if (board[3][3] == 'X') {
+  if (board[2][2] == 'X') {
     x1++;
   }
 
-  
-  
+
+
+
 }
