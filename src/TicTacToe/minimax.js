@@ -88,71 +88,176 @@ function eval() {
   x2 = 0;
   o1 = 0;
   o2 = 0;
-  var xVertical = [];
-  var xHorizontal = [];
-  var xDiagonal = [];
 
-  var oVertical = [];
-  var oHorizontal = [];
-  var oDiagonal = [];
   // Search vertically
+  searchVertically();
+
+  // Search horizontally
+  searchHorizontally();
+
+  // Search diagonally
+  searchDiagonal();
+}
+
+function searchDiagonal() {
+  let diagonal = [];
+  let j = 0;
+  // Forward
+  for (let i = 0; i < 3; i++) {
+    if (board[i][i] == 'X') {
+      diagonal.push('X');
+    } else if (board[i][i] == 'O') {
+      diagonal.push('O');
+    }
+  }
+
+  checkDiagonal(diagonal);
+  diagonal = []; // Create new array for the other side
+
+  // Backward
+  for (let i = 2; i >= 0; i--) {
+    if (board[i][j] == 'X') {
+      diagonal.push('X');
+    } else if (board[i][j] == 'O') {
+      diagonal.push('O');
+    }
+    j++;
+  }
+  checkDiagonal(diagonal);
+}
+
+function searchHorizontally() {
+  let horizontal = [];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (board[i][j] == 'X') {
+        horizontal.push('X');
+      } else if (board[i][j] == 'O') {
+        horizontal.push('O');
+      }
+    }
+    // At the end of each column,
+    // check if there's an O for xHorizontal
+    checkHorizontal(horizontal);
+    console.log(horizontal);
+    horizontal = [];
+  }
+  
+}
+
+function checkHorizontal(horizontal) {
+  if (horizontal.includes('O') == false) {
+    // Check if there's one X or two X
+    switch (horizontal.length) {
+      case 1:
+        // Increment X1
+        x1++;
+        break;
+      case 2:
+        // Increment X2
+        x2++;
+      default:
+        break;
+    }
+  }
+  // Don't evaluate if there's an O
+  // Do the same for O
+  if (horizontal.includes('X') == false) {
+    // Check if there's one O or two O
+    switch (horizontal.length) {
+      case 1:
+        // Increment O1
+        o1++;
+        break;
+      case 2:
+        // Increment O2
+        o2++;
+      default:
+        break;
+    }
+  }
+}
+
+function searchVertically() {
+  let vertical = [];
   for (let j = 0; j < 3; j++) {
     for (let i = 0; i < 3; i++) {
       if (board[i][j] == 'X') {
-        xVertical.push('X');
+        vertical.push('X');
       } else if (board[i][j] == 'O') {
-        oVertical.push('X');
+        vertical.push('O');
       }
     }
     // At the end of each column,
     // check if there's an O for xVertical
-    if (xVertical.find('O') == false) {
-      for (let i = 0; i < xVertical.length; i++) {
-        // Check if there's one X or two X
-        switch (i) {
-          case 1:
-            // Increment X1
-            x1++;
-            break;
-          case 2:
-            // Increment X2
-            x2++;
-          default:
-            break;
-        }
-      }
-    }
-    // Don't evaluate if there's an O
+    checkVertical(vertical);
+    vertical = [];
   }
-
-  // Search horizontally
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (board[i][j] == 'X') {
-        x1++;
-      } else if (board[i][j] == 'O') {
-        o1++;
-      }
-    }
-    // If X and O were found on the same column, then set to 0
-    //if (x1 > 0 && o1 > 0) {
-    //  x1 = 0;
-    //  o1 = 0;
-    //}
-  }
-
-  // Search diagonally 
-  if (board[0][0] == 'X') {
-    x1++;
-  }
-  if (board[1][1] == 'X') {
-    x1++;
-  }
-  if (board[2][2] == 'X') {
-    x1++;
-  }
-
-
-
-
 }
+
+function checkVertical(vertical) {
+  if (vertical.includes('O') == false) {
+    // Check if there's one X or two X
+    switch (vertical.length) {
+      case 1:
+        // Increment X1
+        x1++;
+        break;
+      case 2:
+        // Increment X2
+        x2++;
+      default:
+        break;
+    }
+  }
+  // Don't evaluate if there's an O
+  // Do the same for O
+  if (vertical.includes('X') == false) {
+    // Check if there's one O or two O
+    switch (vertical.length) {
+      case 1:
+        // Increment O1
+        o1++;
+        break;
+      case 2:
+        // Increment O2
+        o2++;
+      default:
+        break;
+    }
+  }
+}
+
+function checkDiagonal(diagonal) {
+  if (diagonal.includes('O') == false) {
+    // Check if there's one X or two X
+    switch (diagonal.length) {
+      case 1:
+        // Increment X1
+        x1++;
+        break;
+      case 2:
+        // Increment X2
+        x2++;
+      default:
+        break;
+    }
+  }
+  // Don't evaluate if there's an O
+  // Do the same for O
+  if (diagonal.includes('X') == false) {
+    // Check if there's one O or two O
+    switch (diagonal.length) {
+      case 1:
+        // Increment O1
+        o1++;
+        break;
+      case 2:
+        // Increment O2
+        o2++;
+      default:
+        break;
+    }
+  }
+}
+

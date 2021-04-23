@@ -75,9 +75,7 @@ function mousePressed() {
   }
   eval();
     
-  let evalP = createP('');
-  evalP.style('font-size', '32pt');
-  evalP.html(`X1 = ${x1}, O1 = ${o1}`);
+  document.getElementById("eval").innerHTML = `X1 = ${x1}, O1 = ${o1}, X2 = ${x2}, O2 = ${o2}`;
 }
 
 function draw() {
