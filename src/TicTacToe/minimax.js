@@ -6,8 +6,8 @@ function bestMove() {
     for (let j = 0; j < 3; j++) {
       if (board[i][j] == '') {
         board[i][j] = ai;
-        // For depth limited search, set depth > 0
-        let score = minimax(board, 0, true);
+        // For depth limited search, set depth to infinity
+        let score = minimax(board, Infinity, true);
         board[i][j] = '';
         if (score < bestScore) {
           bestScore = score;
@@ -30,9 +30,15 @@ let scores = {
 // The minimax algorithm
 function minimax(board, depth, isMaximizing) {
   let result = checkWinner();
-  // For depth limited search, base case is when depth == 0
+  // Check if there's winner first
   if (result !== null) {
     return scores[result];;
+  }
+
+  
+  // For depth limited search, base case is when depth == 0
+  if (depth <= 0) {
+    return eval(); // Return the evaluation
   }
 
   if (isMaximizing) {
@@ -50,7 +56,7 @@ function minimiseScore(board, depth) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = ai;
-        let score = minimax(board, depth + 1, true);
+        let score = minimax(board, depth - 1, true);
         board[i][j] = '';
         bestScore = min(score, bestScore);
       }
@@ -97,6 +103,8 @@ function eval() {
 
   // Search diagonally
   searchDiagonal();
+
+  return 3*x2 + x1 - (3*o2 + o1);
 }
 
 function searchDiagonal() {
@@ -139,7 +147,7 @@ function searchHorizontally() {
     // At the end of each column,
     // check if there's an O for xHorizontal
     checkHorizontal(horizontal);
-    console.log(horizontal);
+    //console.log(horizontal);
     horizontal = [];
   }
   
