@@ -1,3 +1,4 @@
+
 let board = [
   ['', '', ''],
   ['', '', ''],
@@ -10,14 +11,44 @@ let h;
 let human = 'X';
 let ai = 'O';
 let currentPlayer = human;
+let resultP = null;
 function setup() {
   createCanvas(400, 400);
   w = width / 3;
   h = height / 3;
+  switchPlayer();
 }
 
-function equals3(a,b,c) {
-  return a==b && b==c && a != '';
+function resetGame() {
+  board = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+  ];
+
+  if (human == 'O') {
+    currentPlayer = ai;
+    ai = 'X';
+    bestMove();
+  } else {
+    currentPlayer = human;
+  }
+  loop();
+  clear();
+}
+
+function switchPlayer() {
+  var rad = document.getElementsByName('player');
+  for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('change', function () {
+      human = this.value;
+      resetGame();
+    });
+  }
+}
+
+function equals3(a, b, c) {
+  return a == b && b == c && a != '';
 }
 
 function checkWinner() {
@@ -74,7 +105,7 @@ function mousePressed() {
     }
   }
   let evaluation = eval();
-    
+
   document.getElementById("eval").innerHTML = `X1 = ${x1}, O1 = ${o1}, X2 = ${x2}, O2 = ${o2}, Eval: ${evaluation}`;
 }
 
@@ -82,36 +113,36 @@ function draw() {
   background(255);
 
   line(w, 0, w, height);
-  line(w*2, 0, w*2, height);
+  line(w * 2, 0, w * 2, height);
   line(0, h, width, h);
-  line(0, h*2, width, h*2);
-  for (let j = 0; j < 3; j++){
+  line(0, h * 2, width, h * 2);
+  for (let j = 0; j < 3; j++) {
     for (let i = 0; i < 3; i++) {
-      let x = w * i + w/2;
-      let y = h * j + h/2;
+      let x = w * i + w / 2;
+      let y = h * j + h / 2;
       let spot = board[i][j];
       strokeWeight(4);
       if (spot == ai) {
         noFill();
-        ellipse(x,y,w/2);
+        ellipse(x, y, w / 2);
       } else if (spot == human) {
-        let xr = w/4;
-        line(x-xr, y-xr, x + xr, y + xr);
-        line(x+xr, y-xr, x-xr, y + xr);
+        let xr = w / 4;
+        line(x - xr, y - xr, x + xr, y + xr);
+        line(x + xr, y - xr, x - xr, y + xr);
       }
     }
   }
-  
-  
+
+
   let result = checkWinner();
   if (result != null) {
     noLoop();
-    let resultP = createP('');
+    resultP = createP('');
     resultP.style('font-size', '32pt');
     if (result == 'tie') {
       resultP.html('Tie');
     } else {
       resultP.html(`${result} wins`);
     }
-  } 
+  }
 }

@@ -62,18 +62,23 @@ function addRow(playerPick, computerPick) {
 function takeChips(playerPick) {
   currentChips -= playerPick; // Subtract chips from player pick
   let modifiedChipsP = currentChips;
+  let modifiedChipsC = 0;
+  let computerPick = 0;
 
   if (currentChips <= 0) {
     playerWon = "Player won";
+  } else {
+    currentPlayer = 'AI';
+    computerPick = bestMove(currentChips); // Use minimax to get the optimal pick
+    currentChips -= computerPick; // Subtract chips from computer
+    modifiedChipsC = currentChips;
+    if (currentChips <= 0) {
+      playerWon = "Computer won";
+  
+    }
+    currentPlayer = 'human';
   }
-  currentPlayer = 'AI';
-  let computerPick = bestMove(currentChips); // Use minimax to get the optimal pick
-  currentChips -= computerPick; // Subtract chips from computer
-  let modifiedChipsC = currentChips;
-  if (currentChips <= 0) {
-    playerWon = "Computer won";
-
-  }
+  
   rows.push(addRow(playerPick + ", Chips left: " + modifiedChipsP, computerPick + ", Chips left: " + modifiedChipsC)); // Add results to table
 
 
@@ -93,6 +98,10 @@ function takeChips(playerPick) {
     </React.StrictMode>,
     document.getElementById('root')
   );
+}
+
+function evaluate(numberOfChipsTaken) {
+  return ((currentChips-numberOfChipsTaken) % 4);
 }
 
 function App() {
@@ -119,12 +128,14 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button onClick={() => { takeChips(1) }} variant="contained" color="primary" disabled={take1}>Take 1</Button>
-      <Button onClick={() => { takeChips(2) }} variant="contained" color="primary" disabled={take2}>Take 2</Button>
-      <Button onClick={() => { takeChips(3) }} variant="contained" color="primary" disabled={take3}>Take 3</Button>
+      <Button onClick={() => { takeChips(1) }} variant="contained" color="primary" disabled={take1}>Take 1 (Eval: {evaluate(1)})</Button>
+      <Button onClick={() => { takeChips(2) }} variant="contained" color="primary" disabled={take2}>Take 2 (Eval: {evaluate(2)})</Button>
+      <Button onClick={() => { takeChips(3) }} variant="contained" color="primary" disabled={take3}>Take 3 (Eval: {evaluate(3)})</Button>
       <Button onClick={() => { resetGame() }} variant="contained" color="secondary">Reset game</Button>
       <br></br>
       <h2>Chips left: {currentChips}</h2>
+      <br></br>
+      <h2>Turn: {currentPlayer}</h2>
       <br></br>
       <h2>{playerWon}</h2>
     </div>
@@ -145,7 +156,7 @@ function bestMove(chips) {
       chips -= i;
       // Next turn is the maximizing player
       currentPlayer = 'AI';
-      let score = minimax(chips, Infinity, 'AI', true);
+      let score = minimax(chips, Infinity, true);
       chips += i;
       //console.log(i + ":" + score);
       if (score < bestScore) {
