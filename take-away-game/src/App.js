@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import './App.css';
 import { Button } from '@material-ui/core';
+import { MiniMax } from './minimax';
 
 const useStyles = makeStyles({
   table: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
 });
 var rows = [];
 var currentPlayer = "human";
-var currentChips = 21;
+var currentChips = 40;
 var take1 = false;
 var take2 = false;
 var take3 = false;
@@ -30,7 +31,7 @@ var playerWon = "";
 function resetGame() {
   rows = [];
   currentPlayer = "human";
-  currentChips = 21;
+  currentChips = 40;
   take1 = false;
   take2 = false;
   take3 = false;
@@ -64,21 +65,23 @@ function takeChips(playerPick) {
   let modifiedChipsP = currentChips;
   let modifiedChipsC = 0;
   let computerPick = 0;
+  let minimax;
 
   if (currentChips <= 0) {
     playerWon = "Player won";
   } else {
     currentPlayer = 'AI';
-    computerPick = bestMove(currentChips); // Use minimax to get the optimal pick
+    minimax = new MiniMax(currentPlayer)
+    computerPick = minimax.bestMove(currentChips, 5); // Use minimax to get the optimal pick
     currentChips -= computerPick; // Subtract chips from computer
     modifiedChipsC = currentChips;
     if (currentChips <= 0) {
       playerWon = "Computer won";
-  
+
     }
     currentPlayer = 'human';
   }
-  
+
   rows.push(addRow(playerPick + ", Chips left: " + modifiedChipsP, computerPick + ", Chips left: " + modifiedChipsC)); // Add results to table
 
 
@@ -100,8 +103,8 @@ function takeChips(playerPick) {
   );
 }
 
-function evaluate(numberOfChipsTaken) {
-  return ((currentChips-numberOfChipsTaken) % 4);
+export function evaluate(chips) {
+  return ((chips) % 4);
 }
 
 function App() {
@@ -128,9 +131,9 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button onClick={() => { takeChips(1) }} variant="contained" color="primary" disabled={take1}>Take 1 (Eval: {evaluate(1)})</Button>
-      <Button onClick={() => { takeChips(2) }} variant="contained" color="primary" disabled={take2}>Take 2 (Eval: {evaluate(2)})</Button>
-      <Button onClick={() => { takeChips(3) }} variant="contained" color="primary" disabled={take3}>Take 3 (Eval: {evaluate(3)})</Button>
+      <Button onClick={() => { takeChips(1) }} variant="contained" color="primary" disabled={take1}>Take 1 (Eval: {evaluate(currentChips-1)})</Button>
+      <Button onClick={() => { takeChips(2) }} variant="contained" color="primary" disabled={take2}>Take 2 (Eval: {evaluate(currentChips-2)})</Button>
+      <Button onClick={() => { takeChips(3) }} variant="contained" color="primary" disabled={take3}>Take 3 (Eval: {evaluate(currentChips-3)})</Button>
       <Button onClick={() => { resetGame() }} variant="contained" color="secondary">Reset game</Button>
       <br></br>
       <h2>Chips left: {currentChips}</h2>
@@ -143,84 +146,5 @@ function App() {
   );
 }
 
-// Minimax
-
-function bestMove(chips) {
-  // Computer is the minimising player
-  let bestScore = Infinity;
-  let move;
-  // Pick 1, 2, or 3 and apply minimax
-  for (let i = 1; i <= 3; i++) {
-    if (i <= chips) {
-      // AI picks a chip
-      chips -= i;
-      // Next turn is the maximizing player
-      currentPlayer = 'AI';
-      let score = minimax(chips, Infinity, true);
-      chips += i;
-      //console.log(i + ":" + score);
-      if (score < bestScore) {
-        bestScore = score;
-        move = i;
-      }
-    }
-
-  }
-
-  return move;
-}
-
-let scores = {
-  'human': 1,
-  'AI': -1
-};
-
-function minimax(chips, depth, isMaximising) {
-  let result = checkWinner(chips);
-  // Check if there's a winner first
-  if (result !== null) {
-    //console.log(result);
-    return scores[result];
-  }
-
-  if (isMaximising) {
-    return maximiseScore(chips, depth);
-  } else {
-    return minimiseScore(chips, depth);
-  }
-}
-
-function minimiseScore(chips, depth) {
-  let bestScore = Infinity;
-  // Pick 1, 2, or 3 and apply minimax
-  for (let i = 1; i <= 3; i++) {
-    // Check if chips is greater than or equal to the number picked
-    if (i <= chips) {
-      chips -= i;
-      currentPlayer = 'AI'
-      let score = minimax(chips, depth - 1, true);
-      // Undo move
-      chips += i;
-      bestScore = Math.min(score, bestScore);
-    }
-  }
-  return bestScore;
-}
-
-function maximiseScore(chips, depth) {
-  let bestScore = -Infinity;
-  // Pick 1, 2, or 3 and apply minimax
-  for (let i = 1; i <= 3; i++) {
-    // Check if chips is greater than or equal to the number picked
-    if (i <= chips) {
-      chips -= i;
-      currentPlayer = 'human';
-      let score = minimax(chips, depth - 1, false);
-      chips += i;
-      bestScore = Math.max(score, bestScore);
-    }
-  }
-  return bestScore;
-}
 
 export default App;

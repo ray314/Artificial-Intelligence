@@ -12,11 +12,19 @@ let human = 'X';
 let ai = 'O';
 let currentPlayer = human;
 let resultP = null;
+var rad = document.getElementsByName('player');
+  
 function setup() {
   createCanvas(400, 400);
   w = width / 3;
   h = height / 3;
-  switchPlayer();
+  for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('change', function () {
+      currentPlayer = this.value;
+      resetGame();
+      console.log("test");
+    });
+  }
 }
 
 function resetGame() {
@@ -25,26 +33,17 @@ function resetGame() {
     ['', '', ''],
     ['', '', '']
   ];
-
-  if (human == 'O') {
-    currentPlayer = ai;
-    ai = 'X';
+  for (let i = 0; i < rad.length; i++) {
+    if (rad[i].checked) {
+      currentPlayer = rad[i].value;
+    }
+  }
+  if (currentPlayer == ai) {
     bestMove();
   } else {
-    currentPlayer = human;
   }
   loop();
   clear();
-}
-
-function switchPlayer() {
-  var rad = document.getElementsByName('player');
-  for (var i = 0; i < rad.length; i++) {
-    rad[i].addEventListener('change', function () {
-      human = this.value;
-      resetGame();
-    });
-  }
 }
 
 function equals3(a, b, c) {
@@ -122,10 +121,10 @@ function draw() {
       let y = h * j + h / 2;
       let spot = board[i][j];
       strokeWeight(4);
-      if (spot == ai) {
+      if (spot == 'O') {
         noFill();
         ellipse(x, y, w / 2);
-      } else if (spot == human) {
+      } else if (spot == 'X') {
         let xr = w / 4;
         line(x - xr, y - xr, x + xr, y + xr);
         line(x + xr, y - xr, x - xr, y + xr);
