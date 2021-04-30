@@ -22,7 +22,6 @@ function setup() {
     rad[i].addEventListener('change', function () {
       currentPlayer = this.value;
       resetGame();
-      console.log("test");
     });
   }
 }
@@ -42,6 +41,9 @@ function resetGame() {
     bestMove();
   } else {
   }
+  let evaluation = eval();
+
+  document.getElementById("eval").innerHTML = `X1 = ${x1}, O1 = ${o1}, X2 = ${x2}, O2 = ${o2}, Eval: ${evaluation}`;
   loop();
   clear();
 }
