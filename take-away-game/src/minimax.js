@@ -1,12 +1,16 @@
-import { checkWinner, evaluate } from './App';
+import { evaluate } from './App';
 
 // Minimax
 export class MiniMax {
 
   currentPlayer;
+  moveCount;
+  timeTaken;
 
   constructor(currentPlayer) {
     this.currentPlayer = currentPlayer;
+    this.moveCount = 0;
+    this.timeTaken = 0;
   }
 
   checkWinner(chips) {
@@ -43,18 +47,18 @@ export class MiniMax {
   
     }
     var t1 = performance.now();
-    console.log("Minimax took: " +(t1-t0)+ " milliseconds")
-  
+    this.timeTaken = t1-t0;
     return move;
   }
   
   scores = {
-    'human': 1,
-    'AI': -1
+    'human': 100,
+    'AI': -100
   };
   
   minimax(chips, depth, isMaximising) {
     let result = this.checkWinner(chips);
+    this.moveCount++;
     // Check if there's a winner first
     if (result !== null) {
       //console.log(result);

@@ -1,15 +1,16 @@
-function bestMove() {
+function bestMove(depth) {
   // AI is the minimizing player
   let bestScore = Infinity;
   let move;
   let t1 = performance.now();
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
       if (board[i][j] == '') {
         board[i][j] = ai;
         // For depth limited search, set depth to infinity
-        let score = minimax(board, Infinity, true);
+        let score = minimax(board, depth, true);
         board[i][j] = '';
+        
         if (score < bestScore) {
           bestScore = score;
           move = { i, j };
@@ -17,15 +18,15 @@ function bestMove() {
       }
     }
   }
-  
+  let t2 = performance.now();
+  timetaken = (t2-t1) / 1000;
   board[move.i][move.j] = ai;
   currentPlayer = human;
-  console.log("test");
 }
 
 let scores = {
-  X: 1,
-  O: -1,
+  X: 100,
+  O: -100,
   tie: 0
 }
 
@@ -35,13 +36,12 @@ function minimax(board, depth, isMaximizing) {
   moveCount++;
   // Check if there's winner first
   if (result !== null) {
-    return scores[result];;
+    //return scores[result];;
   }
-
   
   // For depth limited search, base case is when depth == 0
   if (depth <= 0) {
-    return eval(); // Return the evaluation
+    return evaluate(); // Return the evaluation
   }
 
   if (isMaximizing) {
@@ -54,8 +54,8 @@ function minimax(board, depth, isMaximizing) {
 // Minimising score function
 function minimiseScore(board, depth) {
   let bestScore = Infinity;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = ai;
@@ -71,8 +71,8 @@ function minimiseScore(board, depth) {
 // Maximising score function
 function maximiseScore(board, depth) {
   let bestScore = -Infinity;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = human;
@@ -90,7 +90,7 @@ var x2 = 0;
 var o1 = 0;
 var o2 = 0;
 
-function eval() {
+function evaluate() {
   //Eval(s) = 3X2(s) + X1(s) − (3O2(s) + O1(s))
   // Set these variables to 0 before each evaluation
   x1 = 0;
@@ -114,7 +114,7 @@ function searchDiagonal() {
   let diagonal = [];
   let j = 0;
   // Forward
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 9; i++) {
     if (board[i][i] == 'X') {
       diagonal.push('X');
     } else if (board[i][i] == 'O') {
@@ -126,7 +126,7 @@ function searchDiagonal() {
   diagonal = []; // Create new array for the other side
 
   // Backward
-  for (let i = 2; i >= 0; i--) {
+  for (let i = 8; i >= 0; i--) {
     if (board[i][j] == 'X') {
       diagonal.push('X');
     } else if (board[i][j] == 'O') {
@@ -139,8 +139,8 @@ function searchDiagonal() {
 
 function searchHorizontally() {
   let horizontal = [];
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
       if (board[i][j] == 'X') {
         horizontal.push('X');
       } else if (board[i][j] == 'O') {
@@ -191,8 +191,8 @@ function checkHorizontal(horizontal) {
 
 function searchVertically() {
   let vertical = [];
-  for (let j = 0; j < 3; j++) {
-    for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 9; j++) {
+    for (let i = 0; i < 9; i++) {
       if (board[i][j] == 'X') {
         vertical.push('X');
       } else if (board[i][j] == 'O') {

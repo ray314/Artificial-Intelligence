@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <script src="p5.min.js"></script>
+  <script src="./TicTacToe9x9.js"></script>
+  <script src="./minimax.js"></script>
+</head>
+<body>
+  <h2 id="eval">(Evaluation)</h2>
+  <input type="radio" id="xHuman" name="player" value="X" checked>
+  <label>Human first</label>
+  <input type="radio" id="oHuman" name="player" value="O">
+  <label>AI first</label>
+  <br>
+  <label>Search depth:</label>
+  <input type="number" onchange="handleDepth(event)" value="1">
+  <span id="timeTaken"></span>
+  <span id="moveCount"></span>
+  <button type="button" onclick="resetGame()">Reset game</button>
+  
+</body>
+</html>

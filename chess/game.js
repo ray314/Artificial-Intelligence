@@ -10,13 +10,14 @@ function minimax(depth, game, isMaximisingPlayer, useAlphaBetaPruning) {
 	// AI is the maximising player player
 	var bestMove = -Infinity;
 	var bestMoveFound;
-
+	console.log(newGameMoves.length);
 	for (var i = 0; i < newGameMoves.length; i++) {
 		var newGameMove = newGameMoves[i]
 		// Make a move on the board
 		game.ugly_move(newGameMove);
+		
 		// Run minimax with or without alpha beta pruning
-		var value = minimax(depth - 1, game, -Infinity, Infinity, isMaximisingPlayer, useAlphaBetaPruning);
+		var value = minimaxRecursive(depth, game, -Infinity, Infinity, isMaximisingPlayer, useAlphaBetaPruning);
 		// Undo the move
 		game.undo();
 		// Check if the value of the move is better than the best one
@@ -33,7 +34,7 @@ function minimax(depth, game, isMaximisingPlayer, useAlphaBetaPruning) {
 function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer, useAlphaBetaPruning) {
 	// Record the number of moves made
 	positionCount++;
-	if (depth === 0) {
+	if (depth <= 0) {
 		// AI is the maximising player on black side so we negate the number to put the value positive
 		return -evaluateBoard(game.board());
 	}
@@ -47,7 +48,7 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer, useAlpha
 		for (var i = 0; i < newGameMoves.length; i++) {
 			game.ugly_move(newGameMoves[i]);
 			// Run minimax to get the best value
-			bestMove = Math.max(bestMove, minimax(depth - 1, game, alpha, beta, true, useAlphaBetaPruning));
+			bestMove = Math.max(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, true, useAlphaBetaPruning));
 			// Undo the move
 			game.undo();
 			if (useAlphaBetaPruning) {
@@ -65,7 +66,7 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer, useAlpha
 		var bestMove = Infinity;
 		for (var i = 0; i < newGameMoves.length; i++) {
 			game.ugly_move(newGameMoves[i]);
-			bestMove = Math.min(bestMove, minimax(depth - 1, game, alpha, beta, false, useAlphaBetaPruning));
+			bestMove = Math.min(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, false, useAlphaBetaPruning));
 			game.undo();
 			if (useAlphaBetaPruning) {
 				beta = Math.min(beta, bestMove);
@@ -224,6 +225,7 @@ function makeBestMove() {
 
 
 var positionCount;
+// The function for getting the best move
 function getBestMove(game) {
 	if (game.game_over()) {
 		alert('Game over');
@@ -235,7 +237,7 @@ function getBestMove(game) {
 	
 
 	var d = new Date().getTime();
-	var bestMove = minimax(depth, game, true, true);
+	var bestMove = minimax(depth, game, true, pruning);
 	var d2 = new Date().getTime();
 	var moveTime = (d2 - d);
 	var positionsPerS = (positionCount * 1000 / moveTime);
@@ -322,9 +324,20 @@ var cfg = {
 };
 board = ChessBoard('board', cfg);
 var type = document.getElementsByName("type");
+var pruning = true;
 for (let i of type) {
 	i.addEventListener('change', () => {
-		console.log(i.value);
+		if (i.value == "withpruning") {
+			pruning = true;
+		} else {
+			pruning = false;
+		}
+		console.log(pruning);
 	});
 	
 };
+
+function resetGame() {
+	board = Chessboard('board', cfg);
+	game = new Chess();
+}
