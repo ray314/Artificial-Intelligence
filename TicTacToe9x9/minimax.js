@@ -8,10 +8,10 @@ function bestMove(depth) {
       if (board[i][j] == '') {
         board[i][j] = ai;
         // For depth limited search, set depth to infinity
-        let score = minimax(board, depth, true);
+        let score = minimax(board, depth, -Infinity, Infinity, true);
         board[i][j] = '';
         
-        if (score < bestScore) {
+        if (score <= bestScore) {
           bestScore = score;
           move = { i, j };
         }
@@ -31,13 +31,9 @@ let scores = {
 }
 
 // The minimax algorithm
-function minimax(board, depth, isMaximizing) {
+function minimax(board, depth, a, b, isMaximizing) {
   let result = checkWinner();
   moveCount++;
-  // Check if there's winner first
-  if (result !== null) {
-    //return scores[result];;
-  }
   
   // For depth limited search, base case is when depth == 0
   if (depth <= 0) {
@@ -45,44 +41,50 @@ function minimax(board, depth, isMaximizing) {
   }
 
   if (isMaximizing) {
-    return maximiseScore(board, depth);
+    return maximiseScore(board, depth, a, b);
   } else {
-    return minimiseScore(board, depth);
+    return minimiseScore(board, depth, a, b);
   }
 }
 
 // Minimising score function
-function minimiseScore(board, depth) {
-  let bestScore = Infinity;
+function minimiseScore(board, depth, a, b) {
+  let score = Infinity;
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = ai;
-        let score = minimax(board, depth - 1, true);
+        score = min(score, minimax(board, depth - 1, a, b, true));
         board[i][j] = '';
-        bestScore = min(score, bestScore);
+        b = min(b, score);
+        if (b <= a) {
+          return b;
+        }
       }
     }
   }
-  return bestScore;
+  return score;
 }
 
 // Maximising score function
-function maximiseScore(board, depth) {
-  let bestScore = -Infinity;
+function maximiseScore(board, depth, a, b) {
+  let score = -Infinity;
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       // Is spot available?
       if (board[i][j] == '') {
         board[i][j] = human;
-        let score = minimax(board, depth - 1, false);
+        score = max(score, minimax(board, depth - 1, a, b, false));
         board[i][j] = '';
-        bestScore = max(score, bestScore);
+        a = max(a, score);
+        if (a >= b) {
+          return a;
+        }
       }
     }
   }
-  return bestScore;
+  return score;
 }
 
 var x1 = 0;

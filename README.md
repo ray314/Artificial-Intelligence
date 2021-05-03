@@ -1,0 +1,1 @@
+To run the take away program, you need to have NodeJS installed and run "npm install" inside the take-away-game folder.

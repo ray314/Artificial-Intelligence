@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <script src="p5.min.js"></script>
+  <script src="../src/TicTacToe/p5.min.js"></script>
   <script src="./TicTacToe9x9.js"></script>
   <script src="./minimax.js"></script>
 </head>
@@ -14,8 +14,11 @@
   <br>
   <label>Search depth:</label>
   <input type="number" onchange="handleDepth(event)" value="1">
+  <br>
   <span id="timeTaken"></span>
+  <br>
   <span id="moveCount"></span>
+  <br>
   <button type="button" onclick="resetGame()">Reset game</button>
   
 </body>
