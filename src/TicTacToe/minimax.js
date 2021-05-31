@@ -32,7 +32,7 @@ let scores = {
 // The minimax algorithm
 function minimax(board, depth, isMaximizing) {
   let result = checkWinner();
-  moveCount++;
+  //moveCount++;
   // Check if there's winner first
   if (result !== null) {
     return scores[result];;
